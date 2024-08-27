@@ -19,6 +19,12 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ["id", "owner", "image", "caption", "timestamp", "likes"]
 
+    def validate_like(self):
+        like = self.likes
+        if like > 0:
+            raise serializers.ValidationError()
+        return like
+
 
 class ProfileSerialzer(serializers.ModelSerializer):
     owner = UserSerializer(source="user", read_only=True)
@@ -48,7 +54,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ["id", "post", "user", "text", "created_date"]
-        # lookup_field = "post_id"
 
 
 class FollowSerializer(serializers.ModelSerializer):

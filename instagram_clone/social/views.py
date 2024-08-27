@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
+from django.db import transaction
 from rest_framework import viewsets, generics, mixins
 from .models import Post, Profile, Follow, Comment, Story, like
 from .serializers import (
@@ -21,7 +22,8 @@ class PostViewSets(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(user=user)
+        if serializer.is_valid():
+            serializer.save(user=user)
 
     def get_queryset(self):
         queryset = super().get_queryset()
